@@ -3,106 +3,114 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Formulario de Ideas de Mejora</title>
+  <title>Ideas de Mejora</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f2f5;
-      padding: 20px;
+      background: #f2f2f2;
+      padding: 40px;
+    }
+    .form-container {
+      background: #fff;
+      padding: 30px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     h2 {
       text-align: center;
       color: #333;
     }
-    form {
-      max-width: 500px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    label {
+      font-weight: bold;
     }
     input, select, textarea {
       width: 100%;
       padding: 10px;
-      margin-top: 10px;
+      margin-top: 5px;
+      margin-bottom: 20px;
       border: 1px solid #ccc;
       border-radius: 5px;
+      box-sizing: border-box;
     }
     button {
-      background: #28a745;
-      color: #fff;
-      border: none;
+      background-color: #28a745;
+      color: white;
       padding: 12px;
+      border: none;
       border-radius: 5px;
-      margin-top: 15px;
       cursor: pointer;
       width: 100%;
+      font-size: 16px;
     }
     button:hover {
-      background: #218838;
+      background-color: #218838;
     }
-    #respuesta {
+    .msg {
       text-align: center;
       margin-top: 15px;
-      font-weight: bold;
+      color: green;
     }
   </style>
 </head>
 <body>
+  <div class="form-container">
+    <h2>Formulario de Ideas de Mejora</h2>
+    <form id="idea-form">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required>
 
-  <h2>Formulario de Ideas de Mejora</h2>
-  <form id="ideaForm">
-    <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" name="nombre" required />
+      <label for="departamento">Departamento:</label>
+      <select id="departamento" name="departamento" required>
+        <option value="">Selecciona uno</option>
+        <option value="Producción">Producción</option>
+        <option value="Calidad">Calidad</option>
+        <option value="Mantenimiento">Mantenimiento</option>
+        <option value="Logística">Logística</option>
+        <option value="Ingeniería">Ingeniería</option>
+        <!-- Agrega más según tus áreas -->
+      </select>
 
-    <label for="departamento">Departamento:</label>
-    <select id="departamento" name="departamento" required>
-      <option value="Producción">Producción</option>
-      <option value="Calidad">Calidad</option>
-      <option value="Mantenimiento">Mantenimiento</option>
-      <option value="Logística">Logística</option>
-    </select>
+      <label for="idea">Idea de mejora:</label>
+      <textarea id="idea" name="idea" rows="4" required></textarea>
 
-    <label for="idea">Idea de Mejora:</label>
-    <textarea id="idea" name="idea" rows="4" required></textarea>
-
-    <button type="submit">Enviar</button>
-  </form>
-
-  <div id="respuesta"></div>
+      <button type="submit">Enviar</button>
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyLZb9N1Y0BURdY7nnxRyvdUnh7CtuaJmC_YoOwQ5psm7jtcc7v63FNuYGSXmtlEvMJ/exec';
-    const form = document.getElementById('ideaForm');
-    const respuesta = document.getElementById('respuesta');
+    const form = document.getElementById('idea-form');
+    const msg = document.getElementById('msg');
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwxN-_II4vh_DCnajcHDrWZkPSXtOjsESWkEYcVd3_tyZ3OlWbFoJwUSiA5c8UrZEQh/exec";
 
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      respuesta.textContent = "Enviando...";
-      const data = {
-  nombre: form.nombre.value,
-  departamento: form.departamento.value,
-  idea: form.idea.value
-};
 
-fetch(scriptURL, {
-  method: 'POST',
-  body: JSON.stringify(data),
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-        .then(response => {
-          respuesta.textContent = "¡Gracias! Tu idea ha sido registrada.";
-          form.reset();
-        })
-        .catch(error => {
-          respuesta.textContent = "Error al enviar la idea. Intenta más tarde.";
-          console.error('Error!', error.message);
-        });
+      const data = {
+        nombre: form.nombre.value,
+        departamento: form.departamento.value,
+        idea: form.idea.value
+      };
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        msg.innerText = "¡Tu idea fue enviada con éxito!";
+        form.reset();
+        setTimeout(() => msg.innerText = "", 4000);
+      })
+      .catch(error => {
+        msg.innerText = "Error al enviar la idea. Intenta de nuevo.";
+        console.error("Error:", error);
+      });
     });
   </script>
-
 </body>
 </html>
