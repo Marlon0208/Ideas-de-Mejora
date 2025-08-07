@@ -80,7 +80,19 @@
     form.addEventListener('submit', e => {
       e.preventDefault();
       respuesta.textContent = "Enviando...";
-      fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+      const data = {
+  nombre: form.nombre.value,
+  departamento: form.departamento.value,
+  idea: form.idea.value
+};
+
+fetch(scriptURL, {
+  method: 'POST',
+  body: JSON.stringify(data),
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
         .then(response => {
           respuesta.textContent = "¡Gracias! Tu idea ha sido registrada.";
           form.reset();
