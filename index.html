@@ -1,113 +1,62 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ideas de Mejora</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 40px;
-    }
-    .form-container {
-      background: #fff;
-      padding: 30px;
-      max-width: 500px;
-      margin: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-    label {
-      font-weight: bold;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #28a745;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #218838;
-    }
-    .msg {
-      text-align: center;
-      margin-top: 15px;
-      color: green;
-    }
-  </style>
+  <title>Formulario de Ideas de Mejora</title>
 </head>
 <body>
-  <div class="form-container">
-    <h2>Formulario de Ideas de Mejora</h2>
-    <form id="idea-form">
-      <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" name="nombre" required>
-
-      <label for="departamento">Departamento:</label>
-      <select id="departamento" name="departamento" required>
-        <option value="">Selecciona uno</option>
-        <option value="Producción">Producción</option>
-        <option value="Calidad">Calidad</option>
-        <option value="Mantenimiento">Mantenimiento</option>
-        <option value="Logística">Logística</option>
-        <option value="Ingeniería">Ingeniería</option>
+  <h2>Enviar Idea de Mejora</h2>
+  <form id="mejoraForm">
+    <label>Mes: <input type="text" name="mes" required /></label><br>
+    <label>Fecha de propuesta: <input type="date" name="fecha" required /></label><br>
+    <label>Estatus: <input type="text" name="estatus" required /></label><br>
+    <label>Dueño de la mejora: <input type="text" name="dueno" required /></label><br>
+    <label>Problema o área de oportunidad:<br><textarea name="problema" required></textarea></label><br>
+    <label>Propuesta de mejora:<br><textarea name="propuesta" required></textarea></label><br>
+    <label>¿Mejora con ahorro significativo?
+      <select name="ahorro">
+        <option value="Sí">Sí</option>
+        <option value="No">No</option>
       </select>
-
-      <label for="idea">Idea de mejora:</label>
-      <textarea id="idea" name="idea" rows="4" required></textarea>
-
-      <button type="submit">Enviar</button>
-      <div class="msg" id="msg"></div>
-    </form>
-  </div>
+    </label><br>
+    <label>Tipo de mejora: <input type="text" name="tipo" required /></label><br>
+    <label>Departamento del dueño de mejora: <input type="text" name="depDueno" required /></label><br>
+    <label>Departamento de la mejora: <input type="text" name="depMejora" required /></label><br>
+    <label>Línea: <input type="text" name="linea" required /></label><br>
+    <label>¿Quién ayudó a implementar?: <input type="text" name="ayuda" /></label><br>
+    <label>Mes de cierre de la mejora: <input type="text" name="mesCierre" /></label><br>
+    <label>Causa del estatus: <input type="text" name="causa" /></label><br><br>
+    <button type="submit">Enviar</button>
+  </form>
+  <p id="mensaje"></p>
 
   <script>
-    const form = document.getElementById('idea-form');
-    const msg = document.getElementById('msg');
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyLZb9N1Y0BURdY7nnxRyvdUnh7CtuaJmC_YoOwQ5psm7jtcc7v63FNuYGSXmtlEvMJ/exec";
+    const form = document.getElementById("mejoraForm");
+    const mensaje = document.getElementById("mensaje");
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      msg.textContent = "Enviando...";
+      const data = new FormData(form);
+      const formObject = {};
+      data.forEach((value, key) => formObject[key] = value);
 
-      const data = {
-        nombre: form.nombre.value,
-        departamento: form.departamento.value,
-        idea: form.idea.value
-      };
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbwxN-_II4vh_DCnajcHDrWZkPSXtOjsESWkEYcVd3_tyZ3OlWbFoJwUSiA5c8UrZEQh/exec", {
+          method: "POST",
+          body: JSON.stringify(formObject),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
 
-      fetch(scriptURL, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(response => {
-        msg.innerText = "¡Tu idea fue enviada con éxito!";
+        const result = await res.text();
+        mensaje.textContent = "¡Enviado correctamente!";
         form.reset();
-        setTimeout(() => msg.innerText = "", 4000);
-      })
-      .catch(error => {
-        msg.innerText = "Error al enviar la idea. Intenta de nuevo.";
-        console.error("Error:", error);
-      });
+      } catch (error) {
+        mensaje.textContent = "Error al enviar. Intenta nuevamente.";
+      }
     });
   </script>
 </body>
