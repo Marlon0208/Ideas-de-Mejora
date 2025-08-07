@@ -69,7 +69,6 @@
         <option value="Mantenimiento">Mantenimiento</option>
         <option value="Logística">Logística</option>
         <option value="Ingeniería">Ingeniería</option>
-        <!-- Agrega más según tus áreas -->
       </select>
 
       <label for="idea">Idea de mejora:</label>
@@ -83,10 +82,11 @@
   <script>
     const form = document.getElementById('idea-form');
     const msg = document.getElementById('msg');
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwxN-_II4vh_DCnajcHDrWZkPSXtOjsESWkEYcVd3_tyZ3OlWbFoJwUSiA5c8UrZEQh/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyLZb9N1Y0BURdY7nnxRyvdUnh7CtuaJmC_YoOwQ5psm7jtcc7v63FNuYGSXmtlEvMJ/exec";
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      msg.textContent = "Enviando...";
 
       const data = {
         nombre: form.nombre.value,
@@ -97,9 +97,7 @@
       fetch(scriptURL, {
         method: 'POST',
         body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
       })
       .then(response => {
         msg.innerText = "¡Tu idea fue enviada con éxito!";
